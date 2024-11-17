@@ -8,4 +8,8 @@ public class CarroAuxiliar {
         s.Libera();
         return numCarro;
     }
+
+    static public int obtenerSinAumento() {
+        return numCarro;
+    }
 }

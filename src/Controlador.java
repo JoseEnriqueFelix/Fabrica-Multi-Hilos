@@ -22,4 +22,8 @@ public class Controlador {
 
         vista.inicializarVista(numsDeLinea, nombresEstaciones);
     }
+
+    public void mandarCarro(int numAuto, int numLinea, int numEstacion) {
+    }
+
 }

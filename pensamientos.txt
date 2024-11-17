@@ -1,0 +1,14 @@
+Ahora la estacion sera el hilo, entonces, creo (y todo esto son solo hipotesis, no necesitan ser tomadas en serio), que cada estacion tendrá un arraylist de 
+que linea de la estacion se encuentra en ese tipo de estacion y si no se encuentra de la misma linea podra avanzar el que se haya quedado atras. Las estaciones
+que sean del mismo tipo compartiran semaforos y la cola (y tal vez otras cosas). ¿El sleep seria en la estacion? ¿la linea seria como un  controlador (no en
+el sentido del mvc)? 
+
+
+¿Como seria el aumento de carro?
+cada vez que entre al primero (que maso es lo mismo, solo que lo hara mas veces)
+
+¿Como es que entrara mas veces (tentativa)?
+linea evaluara si en la primera posicion de la matriz que pertenecen a la estacion 1 hay alguno con ese numero de linea, si no lo hay le dara permiso y le 
+mandara el numero de linea
+
+El arraylist tal vez sea al reves, o sea en la linea indicando en que estaciones está
