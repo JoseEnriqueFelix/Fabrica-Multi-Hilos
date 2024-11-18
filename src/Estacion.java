@@ -2,20 +2,22 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Estacion extends Thread {
-    private int tiempo;
-    private Queue<Robot> colaRobots;
-    private Semaforo manejadorDeCola;
+    private static final int MAX_CARROS = 1000;
+    private static boolean fin;
+    private static Semaforo sFin;
+
+    private int tiempo, tiempo2;
+    private Queue<Robot> colaRobots, colaRobots2;
+    private Semaforo manejadorDeCola, manejadorDeCola2;
     private String nombre;
-    private Semaforo semaforoEstacion;
+    private Semaforo semaforoEstacion, semaforoEstacion2;
     private int numDeLinea;
     private int pos;
-    private boolean valido;
-    private static boolean fin;
+    private boolean valido; // valido2?
+    private boolean especial;
     private int numCarro;
     private Estacion[] estacionesLinea;
-    private Semaforo semPropio;
-    private static Semaforo sFin;
-    private static final int MAX_CARROS = 200;
+    private Semaforo semPropio, semPropio2;
     private Controlador controlador;
 
     public Estacion(int tiempo, Queue<Robot> colaRobots, String nombre, Semaforo manejadorDeCola,
@@ -34,6 +36,33 @@ public class Estacion extends Thread {
             sFin = new Semaforo(1);
             fin = false;
         }
+        especial = false;
+    }
+
+    public Estacion(int tiempo, int tiempo2, Queue<Robot> colaRobots, Queue<Robot> colaRobots2, String nombre,
+            Semaforo manejadorDeCola, Semaforo manejadorDeCola2, Semaforo semaforoEstacion,
+            Semaforo semaforoEstacion2, int linea, int pos) {
+        numCarro = -1;
+        this.tiempo = tiempo;
+        this.tiempo2 = tiempo2;
+        this.nombre = nombre;
+        this.colaRobots = colaRobots;
+        this.colaRobots2 = colaRobots2;
+        this.manejadorDeCola = manejadorDeCola;
+        this.manejadorDeCola2 = manejadorDeCola2;
+        this.semaforoEstacion = semaforoEstacion;
+        this.semaforoEstacion2 = semaforoEstacion2;
+        this.numDeLinea = linea;
+        this.pos = pos;
+        semPropio = new Semaforo(1);
+        semPropio2 = new Semaforo(1);
+        valido = true;
+        // valido2 = true;
+        if (sFin == null) {
+            sFin = new Semaforo(1);
+            fin = false;
+        }
+        especial = true;
 
     }
 
@@ -61,7 +90,11 @@ public class Estacion extends Thread {
                         fin = true;
                     sFin.Libera();
 
-                    trabajoAuxiliar(false);
+                    if (especial)
+                        trabajoAuxiliarEspecial();
+                    else
+                        trabajoAuxiliar();
+
                     boolean b = false;
                     while (!b) {
                         estacionesLinea[pos + 1].getSemaforoEstacion().Espera();
@@ -76,7 +109,10 @@ public class Estacion extends Thread {
                 }
             } else if (pos != estacionesLinea.length - 1) {
                 if (valido && numCarro != -1) {
-                    trabajoAuxiliar(false);
+                    if (especial)
+                        trabajoAuxiliarEspecial();
+                    else
+                        trabajoAuxiliar();
                     boolean b = false;
                     while (!b) {
                         estacionesLinea[pos + 1].getSemaforoEstacion().Espera();
@@ -90,7 +126,10 @@ public class Estacion extends Thread {
                 }
             } else {
                 if (valido && numCarro != -1) {
-                    trabajoAuxiliar(true);
+                    if (especial)
+                        trabajoAuxiliarEspecial();
+                    else
+                        trabajoAuxiliar();
                     controlador.vaciar(numDeLinea, pos);
                     numCarro = -1;
                     sFin.Espera();
@@ -108,7 +147,7 @@ public class Estacion extends Thread {
         }
     }
 
-    private void trabajoAuxiliar(boolean esUltimo) {
+    private void trabajoAuxiliar() {
         valido = false;
         manejadorDeCola.Espera();
         Robot auxRbt = colaRobots.poll();
@@ -121,6 +160,39 @@ public class Estacion extends Thread {
         manejadorDeCola.Espera();
         colaRobots.add(auxRbt);
         manejadorDeCola.Libera();
+        valido = true;
+    }
+
+    private void trabajoAuxiliarEspecial() {
+        valido = false;
+        manejadorDeCola.Espera();
+        Robot auxRbt = colaRobots.poll();
+        manejadorDeCola.Libera();
+        controlador.actualizarVista(numDeLinea, pos, auxRbt.getNumDeSerie(), numCarro);
+        dormir(tiempo);
+        System.out.println(
+                nombre + ", linea: " + numDeLinea + ", pos: " + pos + ", Robot: " + auxRbt.getNumDeSerie()
+                        + " ,numCarro " + numCarro);
+        semaforoEstacion2.Espera();
+        semPropio2.Espera();
+
+        manejadorDeCola2.Espera();
+        Robot auxRbt2 = colaRobots2.poll();
+        manejadorDeCola.Espera();
+        colaRobots.add(auxRbt);
+        manejadorDeCola.Libera();
+        manejadorDeCola2.Libera();
+        controlador.actualizarVista(numDeLinea, pos, auxRbt2.getNumDeSerie(), numCarro);
+        dormir(tiempo2);
+        System.out.println(
+                nombre + ", linea: " + numDeLinea + ", pos: " + pos + ", Robot: " + auxRbt2.getNumDeSerie()
+                        + " ,numCarro " + numCarro);
+        manejadorDeCola2.Espera();
+        colaRobots2.add(auxRbt2);
+        manejadorDeCola2.Libera();
+        semPropio2.Libera();
+        semaforoEstacion2.Libera();
+
         valido = true;
     }
 

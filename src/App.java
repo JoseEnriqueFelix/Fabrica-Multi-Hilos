@@ -1,3 +1,13 @@
+/*
+ * Nombre : Jose Enrique Felix Esparragoza
+ * NoControl : 21170315
+ * Materia : Topicos avanzados de programacion
+ * Unidad : 3
+ * Proyecto :  LINEA DE PRODUCCION VERSION 2
+ * Fecha : 17, nov, 2024
+ * Maestro : Clemente Garcia Gerardo
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -22,23 +32,39 @@ public class App {
 
         for (int i = 0; i < NUM_ESTACIONES; i++) {
             int tiempo = tiempos[i];
-            Queue<Robot> auxCola = new LinkedList<Robot>();
-            for (int k = RANGOS_ROBOTS[(i * 2)]; k < RANGOS_ROBOTS[(i * 2) + 1]; k++)
+            Queue<Robot> auxCola = new LinkedList<>();
+            for (int k = RANGOS_ROBOTS[i * 2]; k < RANGOS_ROBOTS[i * 2 + 1]; k++) {
                 auxCola.add(auxRbts[k]);
+            }
             String nombre = NOMBRES_ESTACIONES[i];
             Semaforo manejaCola = new Semaforo(1);
-            Semaforo semEstacion = new Semaforo(RANGOS_ROBOTS[(i * 2) + 1] - RANGOS_ROBOTS[i * 2]);
-            for (int j = 0; j < numLineas; j++) {
-                estaciones[j][i] = new Estacion(tiempo, auxCola, nombre, manejaCola, semEstacion, j, i);
-            }
-        }
+            Semaforo semEstacion = new Semaforo(auxCola.size());
 
-        Linea[] lineasDeProd = new Linea[numLineas];
-        for (int i = 0; i < numLineas; i++) {
-            ArrayList<Estacion> auxEstacionesLinea = new ArrayList<>();
-            for (int j = 0; j < NUM_ESTACIONES; j++)
-                auxEstacionesLinea.add(estaciones[i][j]);
-            lineasDeProd[i] = new Linea(auxEstacionesLinea);
+            // Variables específicas para la estación 1
+            int tiempo2 = 0;
+            Queue<Robot> auxCola2 = null;
+            Semaforo manejaCola2 = null;
+            Semaforo semEstacion2 = null;
+
+            if (i == 1) {
+                tiempo2 = 400;
+                auxCola2 = new LinkedList<>();
+                auxCola2.add(auxRbts[9]);
+                auxCola2.add(auxRbts[10]);
+                manejaCola2 = new Semaforo(1);
+                semEstacion2 = new Semaforo(auxCola2.size());
+            }
+
+            for (int j = 0; j < numLineas; j++) {
+                if (i == 1) {
+                    estaciones[j][i] = new Estacion(
+                            tiempo, tiempo2, auxCola, auxCola2, nombre, manejaCola, manejaCola2, semEstacion,
+                            semEstacion2, j, i);
+                } else {
+                    estaciones[j][i] = new Estacion(
+                            tiempo, auxCola, nombre, manejaCola, semEstacion, j, i);
+                }
+            }
         }
 
         Vista v = new Vista(estaciones[0].length, estaciones.length);
@@ -58,20 +84,5 @@ public class App {
         for (int i = 0; i < estaciones.length; i++)
             for (int j = 0; j < estaciones[i].length; j++)
                 estaciones[i][j].start();
-
-        // for (int i = 0; i < lineasDeProd.length; i++)
-        // lineasDeProd[i].iniciar();
-        // Linea[] lineasDeProduccion = new Linea[Rutinas.nextInt(8, 15)];
-
-        // for (int i = 0; i < lineasDeProduccion.length; i++)
-        // lineasDeProduccion[i] = new Linea(estaciones);
-
-        // for (int i = 0; i < lineasDeProduccion.length; i++)
-        // lineasDeProduccion[i].setControlador(controlador);
-
-        // controlador.inicializarVista();
-
-        // for (int i = 0; i < lineasDeProduccion.length; i++)
-        // lineasDeProduccion[i].start();
     }
 }
