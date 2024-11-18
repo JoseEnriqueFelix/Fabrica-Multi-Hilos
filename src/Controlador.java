@@ -1,10 +1,10 @@
 public class Controlador {
     private Vista vista;
-    private Linea[] lineasDeProd;
+    private Estacion[][] estaciones;
 
-    public Controlador(Vista v, Linea[] lineas) {
+    public Controlador(Vista v, Estacion[][] estaciones) {
         vista = v;
-        lineasDeProd = lineas;
+        this.estaciones = estaciones;
     }
 
     public void actualizarVista(int linea, int estacion, int numRobot, int numAuto) {
@@ -12,18 +12,21 @@ public class Controlador {
     }
 
     public void inicializarVista() {
-        String[] nombresEstaciones = new String[lineasDeProd[0].getEstaciones().length];
-        int[] numsDeLinea = new int[lineasDeProd.length];
+        String[] nombresEstaciones = new String[estaciones[0].length];
+        System.out.println(nombresEstaciones.length);
+        int[] numsDeLinea = new int[estaciones.length];
+        System.out.println(numsDeLinea.length);
         for (int i = 0; i < nombresEstaciones.length; i++)
-            nombresEstaciones[i] = lineasDeProd[0].getEstaciones()[i].getNombre();
+            nombresEstaciones[i] = estaciones[0][i].getNombre();
 
         for (int i = 0; i < numsDeLinea.length; i++)
-            numsDeLinea[i] = lineasDeProd[i].getNumDeLinea();
+            numsDeLinea[i] = i;
 
         vista.inicializarVista(numsDeLinea, nombresEstaciones);
     }
 
-    public void mandarCarro(int numAuto, int numLinea, int numEstacion) {
+    public void vaciar(int linea, int estacion) {
+        vista.vaciar(linea, estacion);
     }
 
 }

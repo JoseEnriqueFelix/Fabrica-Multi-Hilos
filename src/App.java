@@ -41,16 +41,22 @@ public class App {
             lineasDeProd[i] = new Linea(auxEstacionesLinea);
         }
 
+        Vista v = new Vista(estaciones[0].length, estaciones.length);
+        Controlador controlador = new Controlador(v, estaciones);
+        controlador.inicializarVista();
+
         for (int i = 0; i < numLineas; i++) {
             Estacion[] auxEstaciones = new Estacion[estaciones[i].length];
             for (int j = 0; j < estaciones[i].length; j++)
                 auxEstaciones[j] = estaciones[i][j];
-            for (int j = 0; j < estaciones[i].length; j++)
+            for (int j = 0; j < estaciones[i].length; j++) {
                 estaciones[i][j].setEstacionesLinea(auxEstaciones);
+                estaciones[i][j].setControlador(controlador);
+            }
         }
 
         for (int i = 0; i < estaciones.length; i++)
-            for (int j = 0; j < estaciones[i].length; j++) // CORREGIR AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            for (int j = 0; j < estaciones[i].length; j++)
                 estaciones[i][j].start();
 
         // for (int i = 0; i < lineasDeProd.length; i++)
@@ -59,9 +65,6 @@ public class App {
 
         // for (int i = 0; i < lineasDeProduccion.length; i++)
         // lineasDeProduccion[i] = new Linea(estaciones);
-
-        // Vista v = new Vista(estaciones.length, lineasDeProduccion.length);
-        // Controlador controlador = new Controlador(v, lineasDeProduccion);
 
         // for (int i = 0; i < lineasDeProduccion.length; i++)
         // lineasDeProduccion[i].setControlador(controlador);

@@ -8,7 +8,7 @@ public class Vista extends JFrame {
     private int estacionesLength;
 
     public Vista(int numEstaciones, int numLineasDeProd) {
-        super("Fabrica de autos version 1");
+        super("Fabrica de autos version 2");
         estacionesLength = numEstaciones;
         lblEstaciones = new JLabel[numEstaciones];
         lblInfoLineaDeProd = new JLabel[numLineasDeProd];
@@ -42,6 +42,12 @@ public class Vista extends JFrame {
         borrado = (estacion == 0) ? estacionesLength - 1 : estacion - 1;
         elementos[linea][borrado].vaciar();
         elementos[linea][estacion].actualizarDatos(numRobot, numAuto, linea);
+        repaint();
+        revalidate();
+    }
+
+    public void vaciar(int linea, int estacion) {
+        elementos[linea][estacion].vaciar();
         repaint();
         revalidate();
     }
